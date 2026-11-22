@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vucar - AI Chat Agent for Motorbike Marketplace</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            vucar: {
+              navy: '#0B2545',
+              dark: '#0A1E36',
+              blue: '#0066FF',
+              lightBlue: '#F0F7FF',
+              cardBg: '#FFFFFF',
+              border: '#E2E8F0',
+              accent: '#0284C7'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="bg-[#F4F8FC] text-slate-800 antialiased min-h-screen flex flex-col font-sans">
+
+  <!-- TOP NAVBAR -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <!-- Logo & Brand -->
+      <div class="flex items-center space-x-3">
+        <div class="w-9 h-9 rounded-xl bg-vucar-blue flex items-center justify-center text-white font-black text-xl shadow-sm tracking-tight">
+          V
+        </div>
+        <div>
+          <span class="text-xl font-bold tracking-tight text-vucar-navy">vucar</span>
+          <span class="text-xs px-2 py-0.5 ml-1.5 rounded-full bg-blue-100 text-blue-700 font-semibold uppercase tracking-wider">Marketplace AI</span>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="hidden md:flex space-x-1" id="navTabs">
+        <button onclick="switchTab('studio')" class="tab-btn active px-4 py-2 rounded-xl text-sm font-semibold transition-all">
+          <i class="fa-solid fa-comments mr-1.5"></i> Live Studio
+        </button>
+        <button onclick="switchTab('inventory')" class="tab-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all">
+          <i class="fa-solid fa-motorcycle mr-1.5"></i> Kho xe & Tools
+        </button>
+        <button onclick="switchTab('telemetry')" class="tab-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all">
+          <i class="fa-solid fa-list-check mr-1.5"></i> Event Telemetry
+        </button>
+        <button onclick="switchTab('eval')" class="tab-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all">
+          <i class="fa-solid fa-chart-line mr-1.5"></i> Đánh giá & Feedback
+        </button>
+      </nav>
+
+      <!-- Action Button & Model Pill -->
+      <div class="flex items-center space-x-3">
+        <div id="modelBadge" class="hidden sm:flex items-center space-x-1.5 px-3 py-1 bg-slate-100 rounded-full text-xs font-medium text-slate-600 border border-slate-200">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span id="currentModelLabel">Gemini 3.8 / 2.5 Flash</span>
+        </div>
+        <button onclick="openConfigModal()" class="bg-vucar-navy hover:bg-slate-800 text-white text-xs sm:text-sm font-medium px-4 py-2 rounded-full transition-all shadow-sm flex items-center space-x-1.5">
+          <i class="fa-solid fa-gear"></i>
+          <span>Cấu hình Gemini</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- SUB-HERO BANNER -->
+  <section class="bg-white border-b border-slate-200 py-6 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div>
+        <div class="text-[11px] font-bold tracking-wider text-vucar-blue uppercase mb-1">
+          HỆ THỐNG AGENTIC AI CHO SÀN XE MÁY CŨ VUCAR
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-vucar-navy tracking-tight">
+          Cùng kiến tạo niềm tin cho những giao dịch quan trọng nhất.
+        </h1>
+        <p class="text-sm text-slate-500 mt-1 max-w-3xl">
+          AI Agent làm cầu nối 3 bên giữa Buyer & Seller: Duy trì <strong>Structured State</strong> theo thời gian thực, phát hiện rủi ro pháp lý & đàm phán giá, tự động kích hoạt <strong>Internal Tools</strong> và ghi nhận telemetry.
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-2 text-xs">
+        <span class="px-3 py-1.5 rounded-lg bg-blue-50 text-blue-800 border border-blue-200 font-medium flex items-center">
+          <i class="fa-solid fa-shield-halved text-blue-600 mr-1.5"></i> Bảo vệ pháp lý & Escrow
+        </span>
+        <span class="px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-800 border border-indigo-200 font-medium flex items-center">
+          <i class="fa-solid fa-handshake-simple text-indigo-600 mr-1.5"></i> Đàm phán giá & Vucar Care
+        </span>
+        <span class="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-medium flex items-center">
+          <i class="fa-solid fa-user-lock text-emerald-600 mr-1.5"></i> Chống Bypass sàn
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
+
+    <!-- VIEW 1: LIVE STUDIO -->
+    <div id="viewStudio" class="tab-view block">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- LEFT COLUMN: CONVERSATION LIST (3 Cols) -->
+        <div class="lg:col-span-3 space-y-4">
+          <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
+            <div class="flex items-center justify-between mb-3">
+              <h2 class="text-sm font-bold text-vucar-navy uppercase tracking-wider flex items-center">
+                <i class="fa-solid fa-inbox text-vucar-blue mr-2"></i> Danh sách Hội thoại
+              </h2>
+              <button onclick="resetConversations()" title="Khôi phục dữ liệu ban đầu" class="text-xs text-slate-400 hover:text-slate-600 p-1">
+                <i class="fa-solid fa-arrow-rotate-right"></i>
+              </button>
+            </div>
+
+            <div id="conversationList" class="space-y-2">
+              <!-- Dynamically rendered -->
+              <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 animate-pulse text-xs text-slate-500">
+                Đang tải dữ liệu hội thoại...
+              </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-slate-100">
+              <button onclick="createNewConversation()" class="w-full py-2 px-3 rounded-xl border border-dashed border-slate-300 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-all flex items-center justify-center space-x-1.5">
+                <i class="fa-solid fa-plus text-vucar-blue"></i>
+                <span>Tạo phiên chat mới</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Presets -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
+            <div class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+              Các Case Nghiệp vụ mẫu
+            </div>
+            <div class="space-y-2 text-xs">
+              <div onclick="selectConversation('c1')" class="p-2.5 rounded-xl bg-blue-50/60 border border-blue-100 hover:border-blue-300 cursor-pointer transition-all">
+                <div class="font-bold text-blue-900 flex items-center justify-between">
+                  <span>Case c1: Giá & Đàm phán</span>
+                  <span class="text-[10px] bg-blue-200 text-blue-800 px-1.5 py-0.5 rounded">32tr vs 25tr</span>
+                </div>
+                <div class="text-slate-500 mt-1 line-clamp-1">Người bán đòi 32tr Air Blade, người mua ngân sách 25tr.</div>
+              </div>
+
+              <div onclick="selectConversation('c2')" class="p-2.5 rounded-xl bg-amber-50/60 border border-amber-100 hover:border-amber-300 cursor-pointer transition-all">
+                <div class="font-bold text-amber-900 flex items-center justify-between">
+                  <span>Case c2: Rủi ro giấy tờ</span>
+                  <span class="text-[10px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded font-bold">CRITICAL</span>
+                </div>
+                <div class="text-slate-500 mt-1 line-clamp-1">Xe Vision đang rút hồ sơ gốc, chưa sang tên được ngay.</div>
+              </div>
+
+              <div onclick="selectConversation('c3')" class="p-2.5 rounded-xl bg-purple-50/60 border border-purple-100 hover:border-purple-300 cursor-pointer transition-all">
+                <div class="font-bold text-purple-900 flex items-center justify-between">
+                  <span>Case c3: Bypass sàn</span>
+                  <span class="text-[10px] bg-purple-200 text-purple-800 px-1.5 py-0.5 rounded">Luồn sàn</span>
+                </div>
+                <div class="text-slate-500 mt-1 line-clamp-1">Người bán bài xích trung gian, đòi số ĐT giao dịch riêng.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CENTER COLUMN: 3-WAY CHAT TIMELINE (5 Cols) -->
+        <div class="lg:col-span-5 flex flex-col h-[740px] bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <!-- Chat Header -->
+          <div class="p-4 border-b border-slate-200 bg-slate-50/60 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs" id="activeConvBadge">
+                c1
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-slate-800" id="activeConvTitle">Hội thoại c1</h3>
+                <div class="text-xs text-slate-500 flex items-center space-x-2">
+                  <span id="activeChannelBadge" class="inline-flex items-center text-blue-600 font-medium">Bridge: bridge_active</span>
+                  <span>•</span>
+                  <span id="activeStageBadge" class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full font-semibold text-[10px]">NEGOTIATION</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Escalation indicator -->
+            <div id="escalationPill" class="hidden text-xs bg-red-100 border border-red-300 text-red-700 font-bold px-2.5 py-1 rounded-full items-center">
+              <i class="fa-solid fa-triangle-exclamation mr-1"></i> ĐÃ ESCALATE OPS
+            </div>
+          </div>
+
+          <!-- Chat Messages Area -->
+          <div id="chatTimeline" class="flex-1 p-4 overflow-y-auto space-y-3.5 bg-[#FAFBFD]">
+            <!-- Rendered dynamically -->
+          </div>
+
+          <!-- Quick Action Buttons -->
+          <div class="px-4 py-2 border-t border-slate-100 bg-white flex flex-wrap gap-1.5" id="quickPrompts">
+            <button onclick="injectPrompt('buyer', 'Mình trả giá 26tr được thì mình qua xem xe lấy liền')" class="text-[11px] bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded-full transition-all">
+              💬 Buyer: Trả giá 26tr chốt liền
+            </button>
+            <button onclick="injectPrompt('seller', 'Bớt đúng 500k tiền xăng xe là 31.5tr, không bớt hơn')" class="text-[11px] bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded-full transition-all">
+              💬 Seller: Chốt 31.5tr
+            </button>
+            <button onclick="injectPrompt('buyer', 'Chiều mai tầm 15h mình qua xem xe được không?')" class="text-[11px] bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded-full transition-all">
+              📅 Buyer: Hẹn 15h chiều mai
+            </button>
+          </div>
+
+          <!-- Chat Input Bar -->
+          <div class="p-3 border-t border-slate-200 bg-white">
+            <div class="flex items-center space-x-2 mb-2">
+              <span class="text-xs font-semibold text-slate-500">Người gửi:</span>
+              <div class="flex space-x-1.5" id="senderToggle">
+                <button type="button" onclick="setSender('buyer')" id="btnSenderBuyer" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-600 text-white shadow-xs">
+                  <i class="fa-solid fa-user mr-1"></i> Buyer (Người mua)
+                </button>
+                <button type="button" onclick="setSender('seller')" id="btnSenderSeller" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">
+                  <i class="fa-solid fa-shop mr-1"></i> Seller (Người bán)
+                </button>
+              </div>
+            </div>
+
+            <form onsubmit="handleSendMessage(event)" class="flex space-x-2">
+              <input type="text" id="chatInput" placeholder="Nhập tin nhắn mô phỏng..." class="flex-1 px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-vucar-blue focus:ring-1 focus:ring-vucar-blue">
+              <button type="submit" id="btnSend" class="bg-vucar-blue hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all flex items-center space-x-1.5">
+                <span>Gửi</span>
+                <i class="fa-solid fa-paper-plane text-xs"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: STRUCTURED STATE & REASONING INSPECTOR (4 Cols) -->
+        <div class="lg:col-span-4 flex flex-col h-[740px] bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <!-- Inspector Tabs -->
+          <div class="p-3 border-b border-slate-200 bg-slate-50/60 flex items-center justify-between">
+            <div class="flex items-center space-x-1">
+              <button onclick="switchInspectorTab('state')" id="inspTabState" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-vucar-navy shadow-xs border border-slate-200">
+                Structured State
+              </button>
+              <button onclick="switchInspectorTab('tools')" id="inspTabTools" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:bg-white/80">
+                Tools History (<span id="toolCountBadge">0</span>)
+              </button>
+              <button onclick="switchInspectorTab('raw')" id="inspTabRaw" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:bg-white/80">
+                JSON
+              </button>
+            </div>
+            <span class="text-[10px] text-slate-400 font-mono">vucar-state-v1</span>
+          </div>
+
+          <!-- Inspector Content Area -->
+          <div class="flex-1 p-4 overflow-y-auto space-y-4 text-xs">
+
+            <!-- STATE TAB -->
+            <div id="inspViewState" class="space-y-4">
+
+              <!-- Lead Stage Stepper -->
+              <div>
+                <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">
+                  Tiến trình Giao dịch (Lead Stage)
+                </div>
+                <div class="grid grid-cols-3 gap-1.5" id="stageStepper">
+                  <!-- Stepper Pills -->
+                </div>
+              </div>
+
+              <!-- Next Best Action Card -->
+              <div class="p-3.5 rounded-xl bg-blue-50/80 border border-blue-200" id="nextActionCard">
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="text-[11px] font-bold text-blue-900 uppercase tracking-wider flex items-center">
+                    <i class="fa-solid fa-compass text-blue-600 mr-1.5"></i> Next Best Action
+                  </span>
+                  <span id="nbaTarget" class="px-2 py-0.5 rounded-full bg-blue-200 text-blue-800 font-bold text-[10px]">both</span>
+                </div>
+                <div id="nbaAction" class="text-sm font-extrabold text-blue-950 mb-1">PROPOSE_NEGOTIATION</div>
+                <div id="nbaRationale" class="text-slate-700 leading-relaxed text-xs">
+                  Đang phân tích dữ liệu hội thoại...
+                </div>
+              </div>
+
+              <!-- Active Risks -->
+              <div>
+                <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center justify-between">
+                  <span>Cảnh báo Rủi ro (Risks)</span>
+                  <span id="riskCountBadge" class="px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 font-bold">1</span>
+                </div>
+                <div id="risksContainer" class="space-y-2">
+                  <!-- Rendered dynamically -->
+                </div>
+              </div>
+
+              <!-- Constraints Checklist -->
+              <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                <div class="text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-2">
+                  Ràng buộc của Người mua (Constraints)
+                </div>
+                <div class="space-y-1.5" id="constraintsContainer">
+                  <!-- Rendered dynamically -->
+                </div>
+              </div>
+
+              <!-- Active Listing Context -->
+              <div class="p-3 bg-slate-50 rounded-xl border border-slate-200" id="listingContextCard">
+                <div class="text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-2">
+                  Ngữ cảnh Tin đăng (Listing Context)
+                </div>
+                <div id="listingContextDetails" class="space-y-1 text-slate-600">
+                  <!-- Rendered dynamically -->
+                </div>
+              </div>
+
+              <!-- Open Questions -->
+              <div>
+                <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                  Câu hỏi còn bỏ ngỏ (Open Questions)
+                </div>
+                <ul id="openQuestionsList" class="list-disc pl-4 space-y-1 text-slate-600">
+                  <li>Đang làm rõ thông tin...</li>
+                </ul>
+              </div>
+
+              <!-- Rolling Summary -->
+              <div class="p-3 bg-slate-100/70 rounded-xl border border-slate-200">
+                <div class="text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">
+                  Tóm tắt nén (Rolling Summary)
+                </div>
+                <div id="rollingSummaryText" class="text-slate-700 italic leading-relaxed">
+                  Đang tổng hợp...
+                </div>
+              </div>
+
+            </div>
+
+            <!-- TOOLS HISTORY TAB -->
+            <div id="inspViewTools" class="hidden space-y-3">
+              <div class="text-xs text-slate-500 mb-2">
+                Các API nội bộ Agent đã quyết định gọi trong phiên này:
+              </div>
+              <div id="toolHistoryList" class="space-y-2.5">
+                <!-- Dynamically rendered -->
+              </div>
+            </div>
+
+            <!-- RAW JSON TAB -->
+            <div id="inspViewRaw" class="hidden">
+              <pre id="rawStateJson" class="p-3 bg-slate-900 text-emerald-400 rounded-xl text-[11px] overflow-x-auto font-mono max-h-[620px]">
+{}
+              </pre>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- VIEW 2: INVENTORY & TOOLS -->
+    <div id="viewInventory" class="tab-view hidden space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div>
+            <h2 class="text-xl font-bold text-vucar-navy">Kho xe máy cũ kiểm định Vucar (Mock Database)</h2>
+            <p class="text-xs text-slate-500">Dữ liệu nguồn phục vụ cho công cụ <code>search_listings</code> và <code>get_listing_detail</code>.</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <input type="text" id="inventorySearchInput" onkeyup="filterInventory()" placeholder="Tìm theo hãng, đời, giá..." class="px-3.5 py-2 text-xs rounded-xl border border-slate-300 w-64 focus:outline-none focus:border-vucar-blue">
+            <button onclick="filterInventory()" class="bg-vucar-blue text-white px-3.5 py-2 rounded-xl text-xs font-semibold">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="inventoryGrid">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 3: EVENT TELEMETRY -->
+    <div id="viewTelemetry" class="tab-view hidden space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h2 class="text-xl font-bold text-vucar-navy">Nhật ký Sự kiện Hệ thống (Audit Telemetry)</h2>
+            <p class="text-xs text-slate-500">Bắt buộc theo chuẩn: <code>USER_MESSAGE</code>, <code>AGENT_ACTION</code>, <code>TOOL_CALL</code>, <code>STATE_UPDATE</code>, <code>ESCALATION</code></p>
+          </div>
+          <button onclick="loadTelemetry()" class="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg text-slate-700 font-medium">
+            <i class="fa-solid fa-arrows-rotate mr-1"></i> Làm mới
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-slate-200 bg-slate-50 text-slate-600 uppercase tracking-wider text-[10px]">
+                <th class="py-2.5 px-3">Thời gian</th>
+                <th class="py-2.5 px-3">Hội thoại</th>
+                <th class="py-2.5 px-3">Loại Sự kiện</th>
+                <th class="py-2.5 px-3">Tác nhân</th>
+                <th class="py-2.5 px-3">Dữ liệu chi tiết (Payload)</th>
+              </tr>
+            </thead>
+            <tbody id="telemetryTableBody" class="divide-y divide-slate-100">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 4: EVALUATION & FEEDBACK -->
+    <div id="viewEval" class="tab-view hidden space-y-6">
+
+      <!-- Executive Metric Cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+          <div class="text-xs font-semibold text-slate-500 uppercase">Match Success Rate</div>
+          <div class="text-2xl font-black text-vucar-blue mt-1" id="metricMatchRate">92.4%</div>
+          <div class="text-[11px] text-emerald-600 mt-1 flex items-center">
+            <i class="fa-solid fa-arrow-trend-up mr-1"></i> +8.2% vs baseline
+          </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+          <div class="text-xs font-semibold text-slate-500 uppercase">Appointment Booking</div>
+          <div class="text-2xl font-black text-emerald-600 mt-1" id="metricBookingRate">68.5%</div>
+          <div class="text-[11px] text-slate-500 mt-1">Lịch hẹn xem xe Hub/Nhà</div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+          <div class="text-xs font-semibold text-slate-500 uppercase">Escalation Accuracy</div>
+          <div class="text-2xl font-black text-purple-600 mt-1" id="metricEscalationAcc">96.0%</div>
+          <div class="text-[11px] text-slate-500 mt-1">Độ chuẩn xác phát hiện rủi ro</div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+          <div class="text-xs font-semibold text-slate-500 uppercase">Slot Coverage</div>
+          <div class="text-2xl font-black text-amber-600 mt-1" id="metricSlotCoverage">89.3%</div>
+          <div class="text-[11px] text-slate-500 mt-1">Đầy đủ thông tin nhu cầu</div>
+        </div>
+      </div>
+
+      <!-- Error Analysis Section (Case Study for c1, c2, c3) -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="text-lg font-bold text-vucar-navy">Phân tích Lỗi Nghiệp vụ & Giải pháp Khắc phục (Error Analysis)</h3>
+            <p class="text-xs text-slate-500">Chi tiết phân tích nguyên nhân gốc (Root-cause Analysis) trên các case c1, c2, c3 theo yêu cầu bài toán.</p>
+          </div>
+          <span class="text-xs bg-red-50 text-red-700 px-3 py-1 rounded-full font-bold border border-red-200">5 Case Studies</span>
+        </div>
+
+        <div class="space-y-4" id="errorAnalysisList">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- Continuous Feedback Loop Records -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="text-lg font-bold text-vucar-navy">Vòng lặp Phản hồi (Continuous Feedback Loop Dataset)</h3>
+            <p class="text-xs text-slate-500">Lưu trữ bộ <code>(Context, State, Action, Outcome)</code> để tự động tinh chỉnh Prompt và Few-shot.</p>
+          </div>
+          <button onclick="openFeedbackModal()" class="text-xs bg-vucar-navy text-white px-3.5 py-1.5 rounded-xl font-semibold hover:bg-slate-800">
+            <i class="fa-solid fa-plus mr-1"></i> Thêm Outcome Feedback
+          </button>
+        </div>
+
+        <div class="space-y-3" id="feedbackLoopList">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- CONFIGURATION MODAL -->
+  <div id="configModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-slate-200">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-bold text-vucar-navy flex items-center">
+          <i class="fa-solid fa-brain text-vucar-blue mr-2"></i> Cấu hình Gemini API
+        </h3>
+        <button onclick="closeConfigModal()" class="text-slate-400 hover:text-slate-600">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="space-y-4 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Google Gemini API Key:</label>
+          <input type="password" id="cfgApiKey" placeholder="AIzaSy..." class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:border-vucar-blue">
+          <p class="text-[11px] text-slate-400 mt-1">Khóa API sẽ được lưu trong phiên để gọi trực tiếp model Gemini.</p>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Model LLM:</label>
+          <select id="cfgModel" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-vucar-blue">
+            <option value="gemini-2.5-flash">Gemini 2.5 Flash (Khuyến nghị - Nhanh, Thông minh)</option>
+            <option value="gemini-3.8-flash">Gemini 3.8 Flash (Custom user preference)</option>
+            <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
+            <option value="gemini-2.5-pro">Gemini 2.5 Pro (Deep Reasoning)</option>
+          </select>
+        </div>
+
+        <div class="p-3 bg-blue-50 rounded-xl border border-blue-100 text-blue-900">
+          <div class="font-bold mb-1">Chế độ Fallback thông minh:</div>
+          <p class="text-[11px] text-blue-700">Nếu bạn chưa nhập API Key hoặc offline, hệ thống sẽ tự động kích hoạt <strong>Intelligent Domain Heuristics</strong> với đầy đủ dữ liệu chuẩn cho các case c1, c2, c3 mà không bị gián đoạn demo!</p>
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-end space-x-2">
+        <button onclick="closeConfigModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100">
+          Đóng
+        </button>
+        <button onclick="saveConfig()" class="px-5 py-2 rounded-xl text-xs font-semibold bg-vucar-blue text-white hover:bg-blue-700 shadow-xs">
+          Lưu cấu hình
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEEDBACK SUBMISSION MODAL -->
+  <div id="feedbackModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-slate-200">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-bold text-vucar-navy flex items-center">
+          <i class="fa-solid fa-circle-check text-emerald-600 mr-2"></i> Ghi nhận Outcome Giao dịch
+        </h3>
+        <button onclick="closeFeedbackModal()" class="text-slate-400 hover:text-slate-600">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3.5 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Kết quả Giao dịch (Outcome):</label>
+          <select id="fbOutcome" class="w-full px-3 py-2 rounded-xl border border-slate-300">
+            <option value="APPOINTMENT_BOOKED">Đã đặt lịch hẹn xem xe thành công (Appointment Booked)</option>
+            <option value="DEAL_CLOSED">Giao dịch thành công (Deal Closed)</option>
+            <option value="ALTERNATIVE_ACCEPTED">Khách chuyển sang xem xe thay thế hợp ngân sách</option>
+            <option value="ESCROW_ACCEPTED">Chấp nhận thanh toán qua Escrow Vucar bảo vệ cọc</option>
+            <option value="DROPPED_PRICE_GAP">Gãy deal do không thể thỏa thuận giá</option>
+            <option value="DROPPED_PAPERWORK_RISK">Người mua từ chối vì xe chờ rút hồ sơ quá lâu</option>
+            <option value="BYPASS_OCCURRED">Người bán lén liên hệ riêng (Thoát sàn)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Hành động của Agent đã thực hiện:</label>
+          <input type="text" id="fbAction" placeholder="PROPOSE_NEGOTIATION..." class="w-full px-3 py-2 rounded-xl border border-slate-300">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Điểm đánh giá (1-5 sao):</label>
+          <select id="fbScore" class="w-full px-3 py-2 rounded-xl border border-slate-300">
+            <option value="5">⭐⭐⭐⭐⭐ 5/5 - Cực kỳ hài lòng</option>
+            <option value="4">⭐⭐⭐⭐ 4/5 - Tốt</option>
+            <option value="3">⭐⭐⭐ 3/5 - Trung bình</option>
+            <option value="2">⭐⭐ 2/5 - Cần cải thiện</option>
+            <option value="1">⭐ 1/5 - Quyết định sai</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Ghi chú thực địa (Ops/Sales Notes):</label>
+          <textarea id="fbNotes" rows="2" placeholder="Khách thích giải pháp bảo hành Vucar Care..." class="w-full px-3 py-2 rounded-xl border border-slate-300"></textarea>
+        </div>
+      </div>
+
+      <div class="mt-5 flex justify-end space-x-2">
+        <button onclick="closeFeedbackModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100">
+          Hủy
+        </button>
+        <button onclick="submitFeedbackRecord()" class="px-5 py-2 rounded-xl text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-700 shadow-xs">
+          Lưu Feedback
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

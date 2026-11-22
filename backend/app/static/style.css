@@ -1,0 +1,71 @@
+/* Vucar Marketplace AI Custom Styles */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  background-color: #F4F8FC;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* Active tab style */
+.tab-btn.active {
+  background-color: #0B2545;
+  color: #FFFFFF;
+}
+
+/* Stepper Pill styles */
+.stepper-pill {
+  transition: all 0.2s ease-in-out;
+}
+.stepper-pill.active {
+  background-color: #0066FF;
+  color: #FFFFFF;
+  border-color: #0066FF;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0, 102, 255, 0.25);
+}
+.stepper-pill.past {
+  background-color: #EBF4FE;
+  color: #0066FF;
+  border-color: #BFDBFE;
+}
+.stepper-pill.future {
+  background-color: #F8FAFC;
+  color: #94A3B8;
+  border-color: #E2E8F0;
+}
+
+/* Chat bubble transitions */
+.chat-bubble {
+  animation: fadeInBubble 0.25s ease-out;
+}
+@keyframes fadeInBubble {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Vucar Badge */
+.vucar-gradient-badge {
+  background: linear-gradient(135deg, #0B2545 0%, #0066FF 100%);
+}

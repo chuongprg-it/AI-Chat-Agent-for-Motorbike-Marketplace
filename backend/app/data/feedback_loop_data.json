@@ -1,0 +1,53 @@
+[
+  {
+    "feedback_id": "fb_001",
+    "conversation_id": "c1",
+    "timestamp": "2026-02-05T09:15:00Z",
+    "context_snapshot": {
+      "buyer_budget": 26000000,
+      "seller_asking": 32000000,
+      "delta": 6000000
+    },
+    "state_snapshot": {
+      "lead_stage": "NEGOTIATION",
+      "risk": "PRICE_GAP"
+    },
+    "action_taken": "PROPOSE_NEGOTIATION_WITH_VUCAR_CARE_AND_ALTERNATIVES",
+    "outcome": "MATCH_RETAINED_ALTERNATIVE_VIEWED",
+    "user_satisfaction_score": 5,
+    "notes": "Người mua hài lòng khi được giới thiệu thêm xe Lead 2021 giá 26tr chuẩn ngân sách thay vì bị bế tắc với xe 32tr."
+  },
+  {
+    "feedback_id": "fb_002",
+    "conversation_id": "c2",
+    "timestamp": "2026-02-06T10:30:00Z",
+    "context_snapshot": {
+      "vehicle": "Vision 2020",
+      "paperwork_status": "Chờ rút gốc"
+    },
+    "state_snapshot": {
+      "lead_stage": "MATCHING",
+      "risk": "PAPERWORK_CRITICAL"
+    },
+    "action_taken": "ESCALATE_PAPERWORK_RISK_AND_ESCROW_RECOMMENDATION",
+    "outcome": "FRAUD_AVOIDED_ESCROW_ACCEPTED",
+    "user_satisfaction_score": 5,
+    "notes": "Khách mua cảm ơn vì Vucar đã can thiệp kịp thời giải thích quy trình rút hồ sơ công an và bảo lãnh cọc an toàn."
+  },
+  {
+    "feedback_id": "fb_003",
+    "conversation_id": "c3",
+    "timestamp": "2026-02-07T14:40:00Z",
+    "context_snapshot": {
+      "seller_behavior": "Từ chối trung gian, đòi SĐT trực tiếp"
+    },
+    "state_snapshot": {
+      "lead_stage": "MATCHING",
+      "risk": "DISINTERMEDIATION"
+    },
+    "action_taken": "ADDRESS_BYPASS_WITH_FREE_INSPECTION_PROPOSITION",
+    "outcome": "SELLER_AGREED_TO_HUB_APPOINTMENT",
+    "user_satisfaction_score": 4,
+    "notes": "Người bán đồng ý gặp tại Vucar Hub khi biết sàn miễn phí 100% cho bên bán và hỗ trợ kiểm tra xe 120 điểm."
+  }
+]
