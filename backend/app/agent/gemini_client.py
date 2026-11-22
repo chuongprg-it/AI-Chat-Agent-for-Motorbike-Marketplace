@@ -242,15 +242,84 @@ class GeminiClient:
                     }
                 }
 
-        # Generic action fallback
+        # Dynamic Heuristics for Any Custom / New Conversation
+        import re
+
+        # Extract brands & models
+        detected_brands = []
+        for b in ["Honda", "Yamaha", "Piaggio", "Suzuki", "SYM", "Vespa"]:
+            if b.lower() in prompt_lower:
+                detected_brands.append(b)
+
+        detected_models = []
+        for m in ["Air Blade", "Vision", "Lead", "SH Mode", "SH", "Janus", "NVX", "Grande", "Wave", "Winner", "Exciter"]:
+            if m.lower() in prompt_lower:
+                detected_models.append(m)
+
+        # Extract budget numbers
+        # e.g. "20-30tr", "tầm 25tr", "dưới 30 triệu"
+        budget_max = None
+        budget_min = None
+        money_matches = re.findall(r'(\d+)(?:\s*-\s*(\d+))?\s*(?:tr|triệu|m)', prompt_lower)
+        if money_matches:
+            first_match = money_matches[0]
+            if first_match[1]: # range like 20-30tr
+                budget_min = float(first_match[0]) * 1000000
+                budget_max = float(first_match[1]) * 1000000
+            else:
+                budget_max = float(first_match[0]) * 1000000
+
+        # Location
+        location = "TP. Hồ Chí Minh"
+        if "hà nội" in prompt_lower or "hn" in prompt_lower:
+            location = "Hà Nội"
+        elif "đà nẵng" in prompt_lower:
+            location = "Đà Nẵng"
+
+        # Determine Stage & Action
+        if "hẹn" in prompt_lower or "chiều mai" in prompt_lower or "xem xe lúc" in prompt_lower:
+            lead_stage = "APPOINTMENT"
+            action = "BOOK_APPOINTMENT"
+            suggested_msg = "Dạ tuyệt vời ạ! Vucar xin phép xác nhận lịch hẹn kiểm tra xe và lái thử kèm chuyên viên kiểm định 120 điểm kỹ thuật. Kỹ thuật viên Vucar sẽ có mặt hỗ trợ hai bên thẩm định xe và công chứng hợp đồng an toàn ạ!"
+        elif budget_max or detected_models or detected_brands:
+            lead_stage = "MATCHING"
+            action = "SEARCH_LISTINGS"
+            vehicle_desc = f"{detected_brands[0] if detected_brands else 'xe'} {detected_models[0] if detected_models else ''}".strip()
+            budget_desc = f"tầm {int(budget_max/1000000)} triệu" if budget_max else ""
+            suggested_msg = f"Dạ Vucar đã ghi nhận bạn đang tìm {vehicle_desc} {budget_desc} tại {location}. Hệ thống đã tự động lọc các xe chính chủ đạt chuẩn kiểm định 120 điểm trong kho của Vucar và gửi các phương án tốt nhất để bạn tham khảo ngay nhé!"
+        else:
+            lead_stage = "DISCOVERY"
+            action = "CLARIFY_PREFERENCE"
+            suggested_msg = "Dạ chào bạn, Vucar có thể hỗ trợ bạn tìm kiếm chiếc xe máy cũ ưng ý nhất với cam kết kiểm định 120 điểm và bảo hành động cơ. Bạn có thể cho em biết thêm về khoảng ngân sách, dòng xe ưa thích và khu vực tiện xem xe không ạ?"
+
         return {
             "status": "fallback",
-            "model_used": "vucar-heuristics-generic",
+            "model_used": "vucar-dynamic-heuristics",
             "data": {
-                "action": "CLARIFY_PREFERENCE",
-                "target": "buyer",
-                "rationale": "Cần làm rõ thêm ngân sách và dòng xe ưa thích để kích hoạt công cụ search_listings.",
-                "suggested_message": "Dạ em có thể hỗ trợ bạn tìm kiếm xe phù hợp nhất trên sàn Vucar. Bạn có thể cho em biết thêm về ngân sách tối đa và khu vực xem xe thuận tiện được không ạ?"
+                "lead_stage": lead_stage,
+                "constraints": {
+                    "budget_min": budget_min,
+                    "budget_max": budget_max,
+                    "location": location,
+                    "brands": detected_brands or ["Honda"],
+                    "models": detected_models,
+                    "deal_breakers": ["Xe không rõ nguồn gốc", "Máy đã rớt đầu"]
+                },
+                "listing_context": {
+                    "brand": detected_brands[0] if detected_brands else "Honda",
+                    "model": detected_models[0] if detected_models else "Xe tay ga"
+                },
+                "open_questions": [
+                    "Người mua có yêu cầu đặc biệt về biển số hay đời xe cụ thể không?"
+                ],
+                "risks": [],
+                "next_best_action": {
+                    "action": action,
+                    "target": "buyer",
+                    "rationale": f"Khách hàng cung cấp nhu cầu xe tại {location}. Agent kích hoạt {action} để đẩy nhanh tiến độ giao dịch an toàn.",
+                    "suggested_message": suggested_msg
+                },
+                "summary": f"Người mua tìm {', '.join(detected_models) if detected_models else 'xe máy'} tại {location}."
             }
         }
 
