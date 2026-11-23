@@ -15,6 +15,7 @@ class SenderType(str, Enum):
     BUYER = "buyer"
     SELLER = "seller"
     AGENT = "agent"
+    SALES = "sales"
     SYSTEM = "system"
 
 class EventType(str, Enum):
@@ -93,6 +94,8 @@ class ConversationParticipants(BaseModel):
     seller_id: Optional[str] = None
     seller_name: Optional[str] = None
     agent_id: str = "vucar_ai_agent"
+    sales_id: Optional[str] = None
+    sales_name: Optional[str] = None
 
 class ConversationState(BaseModel):
     conversation_id: str
@@ -112,6 +115,8 @@ class ConversationState(BaseModel):
     turn_count: int = 0
     escalated_to_human: bool = False
     escalation_reason: Optional[str] = None
+    sales_handoff: bool = False
+    sales_handoff_reason: Optional[str] = None
 
 class EventLog(BaseModel):
     event_id: str

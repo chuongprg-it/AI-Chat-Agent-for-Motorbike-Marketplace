@@ -11,4 +11,4 @@ if __name__ == "__main__":
     print("✨ Frontend & API running at: http://127.0.0.1:8000")
     print("💡 Cùng kiến tạo niềm tin cho những giao dịch quan trọng nhất.")
     print("=" * 60)
-    uvicorn.run("backend.app.main:app", host="127.0.0.1", port=8000, reload=False)
+    uvicorn.run("backend.app.main:app", host="127.0.0.1", port=8000, reload=True)

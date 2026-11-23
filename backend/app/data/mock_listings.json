@@ -18,7 +18,7 @@
     "seller_name": "Anh Tuấn (Bình Thạnh)",
     "seller_type": "individual",
     "status": "available",
-    "image_url": "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=500&auto=format&fit=crop&q=60"
+    "image_url": "/static/images/airblade.jpg"
   },
   {
     "id": "list_vision_2020",
@@ -39,7 +39,7 @@
     "seller_name": "Chị Lan (Gò Vấp)",
     "seller_type": "individual",
     "status": "available",
-    "image_url": "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=500&auto=format&fit=crop&q=60"
+    "image_url": "/static/images/vision.jpg"
   },
   {
     "id": "list_lead_2021",
@@ -60,7 +60,7 @@
     "seller_name": "Vucar Hub Quận 10",
     "seller_type": "vucar_store",
     "status": "available",
-    "image_url": "https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=500&auto=format&fit=crop&q=60"
+    "image_url": "/static/images/lead.jpg"
   },
   {
     "id": "list_yamaha_janus_2022",
@@ -81,7 +81,7 @@
     "seller_name": "Vucar Partner Tân Bình",
     "seller_type": "verified_dealer",
     "status": "available",
-    "image_url": "https://images.unsplash.com/photo-1558980664-769d59546b3d?w=500&auto=format&fit=crop&q=60"
+    "image_url": "/static/images/janus.jpg"
   },
   {
     "id": "list_yamaha_nvx_2020",
@@ -102,7 +102,7 @@
     "seller_name": "Anh Hoàng (Thủ Đức)",
     "seller_type": "individual",
     "status": "available",
-    "image_url": "https://images.unsplash.com/photo-1558981420-87aa9210d992?w=500&auto=format&fit=crop&q=60"
+    "image_url": "/static/images/nvx.jpg"
   },
   {
     "id": "list_sh_mode_2021",
@@ -123,6 +123,90 @@
     "seller_name": "Vucar Hub Cầu Giấy",
     "seller_type": "vucar_store",
     "status": "available",
-    "image_url": "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=500&auto=format&fit=crop&q=60"
+    "image_url": "/static/images/sh_mode.jpg"
+  },
+  {
+    "id": "list_wave_alpha_2022",
+    "brand": "Honda",
+    "model": "Wave Alpha 110",
+    "year": 2022,
+    "odo": 9500,
+    "price": 14500000,
+    "currency": "VND",
+    "location": "TP. Hồ Chí Minh",
+    "district": "Quận 12",
+    "color": "Xanh Nhớt",
+    "paperwork_status": "Chính chủ biển số 59, sang tên 1 buổi",
+    "vucar_certified": true,
+    "inspection_score": 93,
+    "description": "Xe số phổ thông siêu tiết kiệm xăng, máy zin êm ái, bảo dưỡng định kỳ đầy đủ.",
+    "seller_id": "seller_q12_01",
+    "seller_name": "Anh Nam (Quận 12)",
+    "seller_type": "individual",
+    "status": "available",
+    "image_url": "/static/images/wave.jpg"
+  },
+  {
+    "id": "list_future_125_2021",
+    "brand": "Honda",
+    "model": "Future 125 Fi",
+    "year": 2021,
+    "odo": 14000,
+    "price": 28500000,
+    "currency": "VND",
+    "location": "TP. Hồ Chí Minh",
+    "district": "Quận Phú Nhuận",
+    "color": "Xanh Đen",
+    "paperwork_status": "Chính chủ công chứng ngay, một đời chủ",
+    "vucar_certified": true,
+    "inspection_score": 95,
+    "description": "Phun xăng điện tử PGM-Fi, cốp xe U-Box rộng, máy móc nguyên zin đầm chắc.",
+    "seller_id": "seller_pn_02",
+    "seller_name": "Chị Mai (Phú Nhuận)",
+    "seller_type": "individual",
+    "status": "available",
+    "image_url": "/static/images/future.jpg"
+  },
+  {
+    "id": "list_grande_2022",
+    "brand": "Yamaha",
+    "model": "Grande Hybrid",
+    "year": 2022,
+    "odo": 11000,
+    "price": 36000000,
+    "currency": "VND",
+    "location": "TP. Hồ Chí Minh",
+    "district": "Quận 7",
+    "color": "Trắng Ngọc Trai",
+    "paperwork_status": "Chính chủ nữ chạy, sang tên trong ngày",
+    "vucar_certified": true,
+    "inspection_score": 97,
+    "description": "Động cơ BlueCore Hybrid êm ái, cốp rộng 27 lít, phanh ABS an toàn tối đa.",
+    "seller_id": "seller_q7_03",
+    "seller_name": "Chị Phương (Quận 7)",
+    "seller_type": "individual",
+    "status": "available",
+    "image_url": "/static/images/grande.jpg"
+  },
+  {
+    "id": "list_vespa_sprint_2021",
+    "brand": "Piaggio",
+    "model": "Vespa Sprint 125 iGet ABS",
+    "year": 2021,
+    "odo": 13500,
+    "price": 56000000,
+    "currency": "VND",
+    "location": "Hà Nội",
+    "district": "Quận Đống Đa",
+    "color": "Vàng Nhám (Giallo Sole)",
+    "paperwork_status": "Chính chủ Hà Nội, hồ sơ gốc đầy đủ",
+    "vucar_certified": true,
+    "inspection_score": 94,
+    "description": "Bản Sprint thể thao đèn vuông, động cơ iGet tiết kiệm nhiên liệu, phanh ABS bánh trước.",
+    "seller_id": "seller_hn_02",
+    "seller_name": "Anh Dũng (Đống Đa)",
+    "seller_type": "individual",
+    "status": "available",
+    "image_url": "/static/images/vespa.jpg"
   }
 ]

@@ -49,16 +49,16 @@
 
       <!-- Navigation Tabs -->
       <nav class="hidden md:flex space-x-1" id="navTabs">
-        <button onclick="switchTab('studio')" class="tab-btn active px-4 py-2 rounded-xl text-sm font-semibold transition-all">
+        <button onclick="switchTab('studio')" title="Màn hình giao tiếp 3 bên giữa Buyer, Seller, Sales và Agent kèm bảng trạng thái thời gian thực" class="tab-btn active px-4 py-2 rounded-xl text-sm font-semibold transition-all">
           <i class="fa-solid fa-comments mr-1.5"></i> Live Studio
         </button>
-        <button onclick="switchTab('inventory')" class="tab-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all">
+        <button onclick="switchTab('inventory')" title="Kho dữ liệu xe máy kiểm định và danh mục 5 Internal Tools Agent dùng để thực thi nghiệp vụ" class="tab-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all">
           <i class="fa-solid fa-motorcycle mr-1.5"></i> Kho xe & Tools
         </button>
-        <button onclick="switchTab('telemetry')" class="tab-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all">
+        <button onclick="switchTab('telemetry')" title="Nhật ký kiểm toán sự kiện: USER_MESSAGE, AGENT_ACTION, TOOL_CALL, STATE_UPDATE, ESCALATION" class="tab-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all">
           <i class="fa-solid fa-list-check mr-1.5"></i> Event Telemetry
         </button>
-        <button onclick="switchTab('eval')" class="tab-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all">
+        <button onclick="switchTab('eval')" title="Bảng chỉ số đo lường hiệu quả (KPIs), phân tích 5 ca lỗi cốt lõi và dữ liệu Feedback Loop" class="tab-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all">
           <i class="fa-solid fa-chart-line mr-1.5"></i> Đánh giá & Feedback
         </button>
       </nav>
@@ -67,7 +67,7 @@
       <div class="flex items-center space-x-3">
         <div id="modelBadge" class="hidden sm:flex items-center space-x-1.5 px-3 py-1 bg-slate-100 rounded-full text-xs font-medium text-slate-600 border border-slate-200">
           <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span id="currentModelLabel">Gemini 3.8 / 2.5 Flash</span>
+          <span id="currentModelLabel">gemini-3.5-flash-lite</span>
         </div>
         <button onclick="openConfigModal()" class="bg-vucar-navy hover:bg-slate-800 text-white text-xs sm:text-sm font-medium px-4 py-2 rounded-full transition-all shadow-sm flex items-center space-x-1.5">
           <i class="fa-solid fa-gear"></i>
@@ -142,12 +142,12 @@
           <!-- Quick Presets -->
           <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
             <div class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-              Các Case Nghiệp vụ mẫu
+              Các Kịch bản Tiêu biểu
             </div>
             <div class="space-y-2 text-xs">
               <div onclick="selectConversation('c1')" class="p-2.5 rounded-xl bg-blue-50/60 border border-blue-100 hover:border-blue-300 cursor-pointer transition-all">
                 <div class="font-bold text-blue-900 flex items-center justify-between">
-                  <span>Case c1: Giá & Đàm phán</span>
+                  <span>Tình huống c1: Đàm phán Giá</span>
                   <span class="text-[10px] bg-blue-200 text-blue-800 px-1.5 py-0.5 rounded">32tr vs 25tr</span>
                 </div>
                 <div class="text-slate-500 mt-1 line-clamp-1">Người bán đòi 32tr Air Blade, người mua ngân sách 25tr.</div>
@@ -155,7 +155,7 @@
 
               <div onclick="selectConversation('c2')" class="p-2.5 rounded-xl bg-amber-50/60 border border-amber-100 hover:border-amber-300 cursor-pointer transition-all">
                 <div class="font-bold text-amber-900 flex items-center justify-between">
-                  <span>Case c2: Rủi ro giấy tờ</span>
+                  <span>Tình huống c2: Pháp lý Giấy tờ</span>
                   <span class="text-[10px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded font-bold">CRITICAL</span>
                 </div>
                 <div class="text-slate-500 mt-1 line-clamp-1">Xe Vision đang rút hồ sơ gốc, chưa sang tên được ngay.</div>
@@ -163,7 +163,7 @@
 
               <div onclick="selectConversation('c3')" class="p-2.5 rounded-xl bg-purple-50/60 border border-purple-100 hover:border-purple-300 cursor-pointer transition-all">
                 <div class="font-bold text-purple-900 flex items-center justify-between">
-                  <span>Case c3: Bypass sàn</span>
+                  <span>Tình huống c3: Giữ Chân Nền Tảng</span>
                   <span class="text-[10px] bg-purple-200 text-purple-800 px-1.5 py-0.5 rounded">Luồn sàn</span>
                 </div>
                 <div class="text-slate-500 mt-1 line-clamp-1">Người bán bài xích trung gian, đòi số ĐT giao dịch riêng.</div>
@@ -190,9 +190,19 @@
               </div>
             </div>
 
-            <!-- Escalation indicator -->
-            <div id="escalationPill" class="hidden text-xs bg-red-100 border border-red-300 text-red-700 font-bold px-2.5 py-1 rounded-full items-center">
-              <i class="fa-solid fa-triangle-exclamation mr-1"></i> ĐÃ ESCALATE OPS
+            <!-- Escalation indicator & Full History Button -->
+            <div class="flex items-center space-x-2">
+              <button onclick="openFullChatModal()" title="Xem toàn bộ lịch sử tin nhắn dạng raw / chi tiết" class="text-xs px-2.5 py-1 rounded-lg border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-semibold flex items-center space-x-1 shadow-xs transition-all">
+                <i class="fa-solid fa-expand text-[10px] text-vucar-blue"></i>
+                <span>Xem Full Chat</span>
+              </button>
+              <div id="escalationPill" class="hidden text-xs bg-red-100 border border-red-300 text-red-700 font-bold px-2.5 py-1 rounded-full items-center">
+                <i class="fa-solid fa-triangle-exclamation mr-1"></i> ĐÃ ESCALATE OPS
+              </div>
+              <!-- Sales hand-off pill -->
+              <div id="salesHandoffPill" class="hidden text-xs bg-emerald-100 border border-emerald-300 text-emerald-700 font-bold px-2.5 py-1 rounded-full items-center">
+                <i class="fa-solid fa-headset mr-1"></i> SALES ĐÃ THAM GIA
+              </div>
             </div>
           </div>
 
@@ -219,17 +229,20 @@
             <div class="flex items-center space-x-2 mb-2">
               <span class="text-xs font-semibold text-slate-500">Người gửi:</span>
               <div class="flex space-x-1.5" id="senderToggle">
-                <button type="button" onclick="setSender('buyer')" id="btnSenderBuyer" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-600 text-white shadow-xs">
+                <button type="button" onclick="setSender('buyer')" id="btnSenderBuyer" title="Đóng vai Người Mua: Tìm xe theo nhu cầu, hỏi giá, yêu cầu xem hình ảnh, đàm phán ngân sách và đặt lịch hẹn" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-600 text-white shadow-xs">
                   <i class="fa-solid fa-user mr-1"></i> Buyer (Người mua)
                 </button>
-                <button type="button" onclick="setSender('seller')" id="btnSenderSeller" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">
+                <button type="button" onclick="setSender('seller')" id="btnSenderSeller" title="Đóng vai Người Bán: Đăng bán xe, báo giá chào, cung cấp thông tin giấy tờ hoặc bày tỏ lo ngại trung gian" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">
                   <i class="fa-solid fa-shop mr-1"></i> Seller (Người bán)
+                </button>
+                <button type="button" onclick="setSender('sales')" id="btnSenderSales" title="Đóng vai Chuyên viên Sales Vucar: Hỗ trợ can thiệp tư vấn trực tiếp khi Agent cần trợ giúp hoặc khách hàng phân vân" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">
+                  <i class="fa-solid fa-headset mr-1"></i> Sales Vucar
                 </button>
               </div>
             </div>
 
             <form onsubmit="handleSendMessage(event)" class="flex space-x-2">
-              <input type="text" id="chatInput" placeholder="Nhập tin nhắn mô phỏng..." class="flex-1 px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-vucar-blue focus:ring-1 focus:ring-vucar-blue">
+              <input type="text" id="chatInput" placeholder="Nhập tin nhắn..." class="flex-1 px-3.5 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-vucar-blue focus:ring-1 focus:ring-vucar-blue">
               <button type="submit" id="btnSend" class="bg-vucar-blue hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all flex items-center space-x-1.5">
                 <span>Gửi</span>
                 <i class="fa-solid fa-paper-plane text-xs"></i>
@@ -341,8 +354,12 @@
 
             <!-- TOOLS HISTORY TAB -->
             <div id="inspViewTools" class="hidden space-y-3">
-              <div class="text-xs text-slate-500 mb-2">
-                Các API nội bộ Agent đã quyết định gọi trong phiên này:
+              <div class="flex items-center justify-between text-xs text-slate-500 mb-2">
+                <span>Các API nội bộ Agent đã quyết định gọi:</span>
+                <button onclick="openFullToolsModal()" class="text-[11px] font-semibold text-vucar-blue hover:underline flex items-center space-x-1">
+                  <i class="fa-solid fa-expand text-[10px]"></i>
+                  <span>Xem Chi Tiết Full Args & Result</span>
+                </button>
               </div>
               <div id="toolHistoryList" class="space-y-2.5">
                 <!-- Dynamically rendered -->
@@ -363,16 +380,40 @@
     </div>
 
     <!-- VIEW 2: INVENTORY & TOOLS -->
-    <div id="viewInventory" class="tab-view hidden space-y-6">
+    <div id="viewInventory" class="tab-view hidden space-y-8">
+
+      <!-- SECTION A: INTERNAL TOOLS CATALOG -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-vucar-blue"></span>
+              <h2 class="text-xl font-bold text-vucar-navy">Danh mục 5 Internal Tools (Agent Internal APIs)</h2>
+              <span class="px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 text-[11px] font-bold">5 Core Production APIs</span>
+            </div>
+            <p class="text-xs text-slate-500 mt-1">Các công cụ API nội bộ nền tảng cung cấp cho AI Agent. Agent tự chủ động quyết định <strong>khi nào và tại sao</strong> cần kích hoạt dựa trên trạng thái (State) giao dịch.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="toolsCatalogGrid">
+          <!-- Dynamically rendered -->
+        </div>
+      </div>
+
+      <!-- SECTION B: MOCK LISTINGS INVENTORY -->
       <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div>
-            <h2 class="text-xl font-bold text-vucar-navy">Kho xe máy cũ kiểm định Vucar (Mock Database)</h2>
-            <p class="text-xs text-slate-500">Dữ liệu nguồn phục vụ cho công cụ <code>search_listings</code> và <code>get_listing_detail</code>.</p>
+            <div class="flex items-center space-x-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+              <h2 class="text-xl font-bold text-vucar-navy">Kho Xe Máy Cũ Đạt Chuẩn Kiểm Định Vucar</h2>
+              <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold" id="inventoryCountBadge">10 Xe Sẵn Sàng</span>
+            </div>
+            <p class="text-xs text-slate-500 mt-1">Dữ liệu nguồn phục vụ cho công cụ <code>search_listings</code> và <code>get_listing_detail</code> với hình ảnh thực tế, điểm kiểm định 120 điểm và tình trạng pháp lý chuẩn.</p>
           </div>
           <div class="flex items-center space-x-2">
-            <input type="text" id="inventorySearchInput" onkeyup="filterInventory()" placeholder="Tìm theo hãng, đời, giá..." class="px-3.5 py-2 text-xs rounded-xl border border-slate-300 w-64 focus:outline-none focus:border-vucar-blue">
-            <button onclick="filterInventory()" class="bg-vucar-blue text-white px-3.5 py-2 rounded-xl text-xs font-semibold">
+            <input type="text" id="inventorySearchInput" onkeyup="filterInventory()" placeholder="Tìm theo hãng, đời, giá, vị trí..." title="Tìm kiếm xe theo tên dòng xe (Air Blade, Vision, Wave...), hãng hoặc mức giá" class="px-3.5 py-2 text-xs rounded-xl border border-slate-300 w-72 focus:outline-none focus:border-vucar-blue">
+            <button onclick="filterInventory()" title="Bấm để lọc danh sách xe" class="bg-vucar-blue text-white px-3.5 py-2 rounded-xl text-xs font-semibold">
               <i class="fa-solid fa-magnifying-glass"></i>
             </button>
           </div>
@@ -382,6 +423,7 @@
           <!-- Rendered dynamically -->
         </div>
       </div>
+
     </div>
 
     <!-- VIEW 3: EVENT TELEMETRY -->
@@ -392,9 +434,15 @@
             <h2 class="text-xl font-bold text-vucar-navy">Nhật ký Sự kiện Hệ thống (Audit Telemetry)</h2>
             <p class="text-xs text-slate-500">Bắt buộc theo chuẩn: <code>USER_MESSAGE</code>, <code>AGENT_ACTION</code>, <code>TOOL_CALL</code>, <code>STATE_UPDATE</code>, <code>ESCALATION</code></p>
           </div>
-          <button onclick="loadTelemetry()" class="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg text-slate-700 font-medium">
-            <i class="fa-solid fa-arrows-rotate mr-1"></i> Làm mới
-          </button>
+          <div class="flex items-center space-x-2">
+            <button onclick="toggleTelemetryLimit()" id="btnToggleTelemetry" class="text-xs bg-vucar-blue text-white hover:bg-blue-700 px-3 py-1.5 rounded-lg font-semibold flex items-center space-x-1 shadow-xs transition-all">
+              <i class="fa-solid fa-list-ul"></i>
+              <span id="telemetryLimitLabel">Xem Full Tất Cả Event</span>
+            </button>
+            <button onclick="loadTelemetry()" class="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg text-slate-700 font-medium">
+              <i class="fa-solid fa-arrows-rotate mr-1"></i> Làm mới
+            </button>
+          </div>
         </div>
 
         <div class="overflow-x-auto">
@@ -452,8 +500,8 @@
       <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs">
         <div class="flex items-center justify-between mb-4">
           <div>
-            <h3 class="text-lg font-bold text-vucar-navy">Phân tích Lỗi Nghiệp vụ & Giải pháp Khắc phục (Error Analysis)</h3>
-            <p class="text-xs text-slate-500">Chi tiết phân tích nguyên nhân gốc (Root-cause Analysis) trên các case c1, c2, c3 theo yêu cầu bài toán.</p>
+            <h3 class="text-lg font-bold text-vucar-navy">Phân tích Tình huống Nghiệp vụ & Phương án Xử lý (Incident Case Studies)</h3>
+            <p class="text-xs text-slate-500">Phân tích nguyên nhân gốc (Root-cause Analysis) và phương án phục hồi xử lý tự động cho các tình huống phát sinh trên sàn.</p>
           </div>
           <span class="text-xs bg-red-50 text-red-700 px-3 py-1 rounded-full font-bold border border-red-200">5 Case Studies</span>
         </div>
@@ -505,12 +553,24 @@
 
         <div>
           <label class="block font-bold text-slate-700 mb-1">Model LLM:</label>
-          <select id="cfgModel" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-vucar-blue">
-            <option value="gemini-2.5-flash">Gemini 2.5 Flash (Khuyến nghị - Nhanh, Thông minh)</option>
-            <option value="gemini-3.8-flash">Gemini 3.8 Flash (Custom user preference)</option>
-            <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
-            <option value="gemini-2.5-pro">Gemini 2.5 Pro (Deep Reasoning)</option>
-          </select>
+          <div class="space-y-2">
+            <!-- Option 1: Dropdown (3.5 & 3.8) -->
+            <div>
+              <span class="text-[11px] text-slate-500 font-medium">Cách 1: Chọn từ danh sách có sẵn (3.5 / 3.8)</span>
+              <select id="cfgModel" onchange="onSelectModelDropdown(this.value)" class="w-full mt-1 px-3 py-2 text-xs rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-vucar-blue">
+                <option value="gemini-3.5-flash-lite">Gemini 3.5 Flash Lite (Mặc định - Cực nhanh, tối ưu)</option>
+                <option value="gemini-3.8-flash">Gemini 3.8 Flash (High Performance)</option>
+              </select>
+            </div>
+
+            <!-- Option 2: Text input for custom model -->
+            <div>
+              <span class="text-[11px] text-slate-500 font-medium">Cách 2: Hoặc tự nhập model tùy chỉnh</span>
+              <div class="relative mt-1">
+                <input type="text" id="cfgModelCustom" oninput="onInputModelCustom(this.value)" placeholder="VD: gemini-3.5-pro, gemini-3.8-pro..." class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:border-vucar-blue">
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="p-3 bg-blue-50 rounded-xl border border-blue-100 text-blue-900">
@@ -584,6 +644,76 @@
         </button>
         <button onclick="submitFeedbackRecord()" class="px-5 py-2 rounded-xl text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-700 shadow-xs">
           Lưu Feedback
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FULL CHAT HISTORY MODAL -->
+  <div id="fullChatModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-3xl w-full p-6 shadow-2xl border border-slate-200 flex flex-col max-h-[88vh]">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+        <div>
+          <h3 class="text-lg font-bold text-vucar-navy flex items-center">
+            <i class="fa-solid fa-comments text-vucar-blue mr-2"></i> Toàn bộ Lịch sử Chat (<span id="modalChatCount">0</span> tin nhắn)
+          </h3>
+          <p class="text-xs text-slate-500">Xem đầy đủ toàn bộ diễn biến tin nhắn giữa Người mua, Người bán, Sales và AI Agent</p>
+        </div>
+        <button onclick="closeFullChatModal()" class="text-slate-400 hover:text-slate-600 p-1">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+      <div id="modalChatTimeline" class="flex-1 overflow-y-auto py-4 space-y-3.5">
+        <!-- Rendered dynamically -->
+      </div>
+      <div class="pt-3 border-t border-slate-200 flex justify-end">
+        <button onclick="closeFullChatModal()" class="px-5 py-2 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700">
+          Đóng
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FULL TOOLS HISTORY MODAL -->
+  <div id="fullToolsModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-4xl w-full p-6 shadow-2xl border border-slate-200 flex flex-col max-h-[88vh]">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+        <div>
+          <h3 class="text-lg font-bold text-vucar-navy flex items-center">
+            <i class="fa-solid fa-terminal text-vucar-blue mr-2"></i> Full Tool Calls & Results (<span id="modalToolCount">0</span> lệnh)
+          </h3>
+          <p class="text-xs text-slate-500">Toàn bộ arguments đầu vào và kết quả trả về của các công cụ nội bộ</p>
+        </div>
+        <button onclick="closeFullToolsModal()" class="text-slate-400 hover:text-slate-600 p-1">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+      <div id="modalToolsContent" class="flex-1 overflow-y-auto py-4 space-y-4">
+        <!-- Rendered dynamically -->
+      </div>
+      <div class="pt-3 border-t border-slate-200 flex justify-end">
+        <button onclick="closeFullToolsModal()" class="px-5 py-2 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700">
+          Đóng
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TELEMETRY PAYLOAD MODAL -->
+  <div id="payloadDetailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200 flex flex-col max-h-[80vh]">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+        <h3 class="text-base font-bold text-vucar-navy flex items-center">
+          <i class="fa-solid fa-code text-vucar-blue mr-2"></i> Chi tiết Event Payload (<span id="modalEventId"></span>)
+        </h3>
+        <button onclick="closePayloadModal()" class="text-slate-400 hover:text-slate-600 p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <pre id="modalPayloadJson" class="flex-1 overflow-auto my-4 p-4 bg-slate-900 text-emerald-400 font-mono text-xs rounded-2xl"></pre>
+      <div class="pt-2 border-t border-slate-200 flex justify-end">
+        <button onclick="closePayloadModal()" class="px-5 py-2 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700">
+          Đóng
         </button>
       </div>
     </div>

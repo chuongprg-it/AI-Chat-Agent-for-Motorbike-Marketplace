@@ -11,7 +11,7 @@ from backend.app.config import settings
 from backend.app.models.schema import (
     SenderType, LeadStage, ConversationState, Message
 )
-from backend.app.agent.tools import db, get_event_logs, search_listings
+from backend.app.agent.tools import db, get_event_logs, search_listings, TOOL_DEFINITIONS
 from backend.app.agent.memory import memory_manager
 from backend.app.agent.engine import agent_engine
 from backend.app.agent.gemini_client import gemini_client
@@ -113,7 +113,15 @@ def get_conversation_detail(conv_id: str):
     raw_msgs = memory_manager.get_raw_messages(conv_id)
     state = memory_manager.get_state(conv_id)
     if not state and not raw_msgs:
-        raise HTTPException(status_code=404, detail="Conversation not found")
+        # Auto initialize an empty state so newly created conversations are valid
+        from datetime import datetime
+        now = datetime.utcnow().isoformat()
+        state = ConversationState(
+            conversation_id=conv_id,
+            created_at=now,
+            updated_at=now
+        )
+        memory_manager.save_state(state)
 
     events = get_event_logs(conv_id)
     return {
@@ -128,7 +136,7 @@ def send_message(conv_id: str, payload: PostMessageRequest):
     try:
         sender = SenderType(payload.sender)
     except Exception:
-        raise HTTPException(status_code=400, detail="Invalid sender. Must be buyer, seller, agent")
+        raise HTTPException(status_code=400, detail="Invalid sender. Must be buyer, seller, sales, agent")
 
     res = agent_engine.process_message(
         conversation_id=conv_id,
@@ -143,6 +151,14 @@ def reset_conversations():
     memory_manager.structured_states.clear()
     load_initial_chat_history()
     return {"status": "reset_complete"}
+
+@app.get("/api/tools")
+def get_tools_catalog():
+    return {
+        "status": "success",
+        "total": len(TOOL_DEFINITIONS),
+        "tools": TOOL_DEFINITIONS
+    }
 
 @app.get("/api/listings")
 def get_listings(

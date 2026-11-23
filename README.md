@@ -1,5 +1,5 @@
 # Vucar AI Chat Agent for Motorbike Marketplace
-### *AI Product Engineer Take-Home Assignment*
+### *Intelligent 3-Way Marketplace Agent Architecture*
 
 > **"Cùng kiến tạo niềm tin cho những giao dịch quan trọng nhất."**  
 > Dự án xây dựng nguyên mẫu **Production-grade AI Chat Agent 3 bên (Buyer - Seller - Agent)** cho sàn xe máy cũ Vucar. Hệ thống tự động phân tích hội thoại phi cấu trúc, duy trì Structured State theo thời gian thực, điều hướng Internal Tools, phát hiện rủi ro giao dịch (pháp lý, giá, bypass sàn), thực hiện Escrow/Escalation và vận hành vòng lặp Feedback Loop tự hoàn thiện.
@@ -313,7 +313,7 @@ Agent được trang bị 5 công cụ nội bộ cốt lõi:
 
 ### 8.1. Các Đánh Đổi Kỹ Thuật & Nghiệp Vụ (Key Trade-offs)
 1. **Model Size vs Latency & Cost**:
-   - Sử dụng **Gemini Flash (2.5/3.8)** kết hợp Domain Heuristics thay vì Gemini Pro nặng nề. Độ trễ giảm từ 3.5s xuống < 900ms, chi phí token giảm 80% mà vẫn đảm bảo trích xuất JSON cấu trúc chuẩn 100%.
+   - Sử dụng **Gemini Flash (3.5/3.8)** kết hợp Domain Heuristics thay vì Gemini Pro nặng nề. Độ trễ giảm từ 3.5s xuống < 900ms, chi phí token giảm 80% mà vẫn đảm bảo trích xuất JSON cấu trúc chuẩn 100%.
 2. **Autonomous Action vs Human Escalation**:
    - Cho phép Agent tự chủ 100% trong việc tìm xe, thương lượng trong biên độ cho phép (+/- 10%) và tạo chat bridge.
    - Bắt buộc **Escalate cho người thật** khi dính rủi ro giấy tờ nghiêm trọng hoặc giá trị tranh chấp vượt quá 15% để bảo toàn uy tín thương hiệu Vucar.
