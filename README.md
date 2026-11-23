@@ -573,7 +573,3 @@ python run.py
 ```
 
 Hệ thống chạy hoàn toàn **không cần Gemini API key** nhờ Intelligent Domain Heuristics tích hợp sẵn.
-
----
-
-*Built with ❤️ for Vucar — AI Product Engineer Submission*
