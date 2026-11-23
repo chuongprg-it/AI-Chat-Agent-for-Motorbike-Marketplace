@@ -531,27 +531,96 @@ Live Chat → Record Quadruplet (Context, State, Action, Outcome)
 
 ---
 
-## 8. Kế Hoạch Cải Tiến Tương Lai
+## 8. Kế Hoạch Cải Tiến Tương Lai & Đề Xuất Nâng Cao
 
-### Ngắn hạn (1–2 tháng)
-- **Persistent Storage:** Thay in-memory bằng Redis (state) + PostgreSQL (logs)
-- **Streaming Response:** Server-Sent Events để hiển thị token-by-token
-- **Budget Stretch Field:** Tách `budget_target` / `budget_stretch_max`
-- **Appointment Guardrail:** Chặn booking khi còn CRITICAL risk chưa resolve
-- **Vietnamese NLP Enhancement:** Từ điển xe máy địa phương (zin, rớt đầu, bao công chứng)
+Để biến AI Agent từ một hệ thống điều phối hội thoại đơn thuần thành **Trợ lý Toàn diện (Super Copilot) thúc đẩy doanh số mạnh mẽ cho đội ngũ Sales & Vận hành Vucar**, kế hoạch kiến trúc và cải tiến kỹ thuật được định hình chi tiết như sau:
 
-### Trung hạn (3–6 tháng)
-- **Gemini Function Calling Native:** Chuyển tool routing sang native function calling của Gemini API
-- **Vector Search cho Listings:** Semantic matching thay vì filter cứng (tìm xe "tương đương" thay vì chỉ filter theo field)
-- **Multi-turn Negotiation Engine:** Module chuyên biệt cho đàm phán giá có ngưỡng và chiến thuật
-- **Escrow Integration API:** Kết nối thực với hệ thống ký quỹ của Vucar
-- **Real-time Risk Alert:** Push notification cho Sales khi phát hiện risk CRITICAL
+---
 
-### Dài hạn (6–12 tháng)
-- **Fine-tuned Domain Model:** Fine-tune Gemini Flash với 10,000+ hội thoại thực Vucar
-- **Proactive Agent Mode:** Agent chủ động ping buyer/seller khi phát hiện listing phù hợp mới
-- **Multi-modal Support:** Phân tích ảnh xe người dùng gửi (phát hiện va đập, kiểm tra ODO qua ảnh)
-- **Vucar Knowledge Graph:** Graph database về quan hệ xe–giá–vùng–mùa để định giá chính xác hơn
+### 8.1. Thiết Kế Pipeline RAG (Retrieval-Augmented Generation) Tra Cứu Quy Trình & Pháp Lý Vucar
+
+Hiện tại các kiến thức chuyên sâu về chính sách Vucar (120 điểm kiểm định gồm những gì, điều khoản bảo hành Vucar Care 6 tháng, quy trình rút hồ sơ công an quận...) đang được nén tóm tắt trong Prompt. Điều này gây tốn Context Window và khó cập nhật khi quy chế công ty thay đổi.
+
+**Kiến trúc RAG chuyên biệt cho Vucar:**
+```
+[Tài liệu nội bộ: SOP 120 điểm, Quy chế cọc/Escrow, Luật Giao thông/Sang tên]
+                               │
+                               ▼
+            [Chunking & Metadata Tagging (Chủ đề, Model xe, Pháp lý)]
+                               │
+                               ▼
+       [Embedding Model: text-embedding-004 / multilingual-e5-base]
+                               │
+                               ▼
+        [Vector DB: Qdrant / Pgvector / Pinecone (Hỗ trợ Hybrid Search)]
+                               │
+                               ▼
+ ┌────────────────────────────────────────────────────────────────────────┐
+ │ HYBRID RETRIEVAL PIPELINE (Dense Vector + BM25 Lexical + Reranker)     │
+ │                                                                        │
+ │ 1. Intent Router: Xác định câu hỏi thuộc nhóm:                        │
+ │    - "Chính sách kiểm định 120 điểm"                                   │
+ │    - "Quy trình rút hồ sơ gốc / Sang tên đổi chủ cấp biển số mới"       │
+ │    - "Gói bảo hành động cơ & hộp số Vucar Care"                        │
+ │                                                                        │
+ │ 2. Retrieve Top-K Contexts (K=3) có độ tin cậy > 0.82                  │
+ │ 3. Reranker (Cohere / Cross-Encoder): Loại bỏ context nhiễu            │
+ │ 4. Dynamic Prompt Injection: Cung cấp trích dẫn chính xác cho LLM     │
+ └────────────────────────────────────────────────────────────────────────┘
+```
+* **Lợi ích thực tế:** Khi khách hàng hỏi *"Rút hồ sơ ở Bình Dương mất mấy ngày và tốn bao nhiêu phí?"* hoặc *"Gói Vucar Care có bảo hành nồi xe tay ga không?"*, AI trả lời chính xác 100% theo cẩm nang mới nhất của Vucar, kèm số hotline và dẫn chứng quy định rõ ràng, hoàn toàn triệt tiêu Hallucination.
+
+---
+
+### 8.2. Hệ Thống "Sales Copilot" — Biến AI Thành Trợ Thủ Đắc Lực Cho Đội Ngũ Bán Hàng
+
+Thay vì chỉ tương tác với khách, AI Agent sẽ đóng vai trò **"Bộ não phân tích ngầm" (Background Intelligence)** hỗ trợ nhân viên Sales chốt deal nhanh gấp 2–3 lần:
+
+1. **Chấm điểm tiềm năng Lead theo thời gian thực (Real-time Lead Scoring & Intent Matrix):**
+   * Tự động tính điểm độ nóng của Lead (0 – 100) dựa trên: Tần suất phản hồi, sự rõ ràng về ngân sách, mức độ cần xe gấp (Urgency), và thiện chí xem xe.
+   * Khi Lead đạt điểm > 80 (Hot Lead), hệ thống tự động đẩy thông báo ưu tiên (High Priority Alert) kèm tóm tắt hồ sơ khách hàng vào ứng dụng của Telesales/Sales Rep.
+
+2. **Gợi ý kịch bản ứng biến thông minh (Live Battlecards & Objection Handling):**
+   * Nếu khách hàng so sánh: *"Bên Chợ Tốt bán con Air Blade này có 27 triệu thôi"*:
+   * AI Copilot lập tức gửi gợi ý cho Sales:
+     > *"Anh/chị giải thích: Giá 27tr trên sàn tự do thường chưa gồm phí rút hồ sơ gốc (1.5–2tr) và không có bảo hành động cơ. Xe 31tr của Vucar đã kiểm định 120 điểm, bao sang tên và tặng kèm bảo hành Vucar Care 6 tháng, tiết kiệm chi phí sửa chữa về sau."*
+
+3. **Cơ chế Handoff thông minh kèm "Briefing Report" (Không để Sales đọc lại từ đầu):**
+   * Khi cần chuyển giao cho người thật (Escalation / Handoff), Sales nhận ngay 1 bản **One-Page Executive Briefing**:
+     * *Khách hàng:* Anh Nam - Tìm xe tay ga 25-27tr đi làm.
+     * *Điểm nghẽn (Blocker):* Rất thích xe Vision nhưng ngại biển số tỉnh chưa rút hồ sơ.
+     * *Hành động đề xuất cho Sales:* Đề xuất đặt cọc giữ xe qua Escrow và hỗ trợ phí rút hồ sơ 500k.
+
+4. **Tự động trích xuất Task & Lên lịch nhắc hẹn CRM (Auto CRM Sync):**
+   * Tự động push dữ liệu sau cuộc chat vào CRM (HubSpot, Salesforce, LarkBase, Lark Meego): Tạo Contact, cập nhật Deal Stage, tạo Google Calendar nhắc Kỹ thuật viên đi kiểm định xe theo giờ hẹn đã chốt.
+
+---
+
+### 8.3. Động Cơ Định Giá Thị Trường & Đàm Phán Tự Động (AI Valuation & Dynamic Pricing Engine)
+
+* **Market Pricing Intelligence:**
+  * Kết nối trực tiếp với cơ sở dữ liệu giao dịch thực tế của Vucar để phân tích giá thị trường (Fair Market Value) theo: `Hãng + Dòng xe + Năm sản xuất + Số ODO + Tình trạng ngoại quan`.
+* **Dynamic Negotiation Boundary:**
+  * Thiết lập biên độ thương lượng tự động: Cho phép AI Agent tự động đề xuất giảm giá trong giới hạn cho phép của Seller (ví dụ được phép bớt tối đa 1.5 triệu nếu khách đồng ý chốt lịch hẹn trong 24 giờ tới).
+
+---
+
+### 8.4. Đa Kênh Tích Hợp (Omnichannel Integration) & Voice AI
+
+* **Omnichannel Hub:** Tích hợp trực tiếp vào **Zalo OA (Official Account)**, **Facebook Messenger**, **TikTok Shop Chat**, và **Website Widget** để quản lý hội thoại tập trung trên 1 luồng State duy nhất.
+* **AI Voice Caller (Khảo sát & Nhắc lịch tự động):**
+  * Tích hợp Voice Agent (sử dụng Gemini Live API / ElevenLabs) tự động gọi điện xác nhận lịch hẹn trước 2 tiếng: *"Dạ em chào anh Nam, em là trợ lý Vucar gọi để xác nhận lịch xem xe Air Blade lúc 15h chiều nay tại Vucar Hub Quận 10..."*.
+
+---
+
+### 8.5. Lộ Trình Triển Khai Kỹ Thuật (Engineering Roadmap)
+
+| Giai đoạn | Thời gian | Mục tiêu chính | Đầu ra kỹ thuật |
+| :--- | :---: | :--- | :--- |
+| **P0: Foundation** | 1–2 tháng | Ổn định hạ tầng & Dữ liệu bền vững | • Persistent Storage (PostgreSQL + Redis).<br>• Authentication & Per-conversation Locks.<br>• Appointment Guardrail chặn booking khi dính rủi ro. |
+| **P1: Intelligence** | 3–4 tháng | Trợ lý thông minh & Am hiểu nghiệp vụ | • **Triển khai RAG Pipeline** tra cứu 120 điểm kiểm định & pháp lý.<br>• Native Function Calling trên Gemini 3.5/3.8 Flash.<br>• Từ điển tiếng lóng xe máy Việt Nam chuyên sâu. |
+| **P2: Sales Copilot** | 5–6 tháng | Tối ưu hóa chuyển đổi & Giúp sức Sales | • Real-time Lead Scoring Dashboard cho Sales.<br>• Gợi ý Battlecard đàm phán tức thì.<br>• Tự động đồng bộ hóa CRM & Lịch kiểm định. |
+| **P3: Ecosystem** | 7–12 tháng | Nền tảng toàn diện | • Omnichannel Zalo OA / Messenger.<br>• Dynamic Market Valuation Engine.<br>• AI Vision phát hiện vết nứt/trầy xước xe qua ảnh chụp. |
 
 ---
 
